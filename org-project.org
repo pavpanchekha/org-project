@@ -1,0 +1,295 @@
+#+TITLE: Org-Project: Pretty Org-mode Programs
+#+AUTHOR: Pavel Panchekha <me@pavpanchekha.com>
+#+SETUPFILE: org-project.setup
+
+Org-Project is a set of options and themes for [[http://orgmode.org][Org-mode]] optimized for
+literate programs written with Org-mode.  It is designed to work
+directly with Org-mode's HTML export tool.
+
+* About
+
+Org-Project is a set of styles and themes written by [[mailto:me@pavpanchekha.com][Pavel Panchekha]]
+for exporting Org-mode literate programs.  With it, Org-mode's default
+HTML export should be all you need to generate and elegant project
+page.
+
+and [[http://code.google.com/p/hyphenator/][hyphenator.js]], as well as on the [[http://code.google.com/apis/libraries/devguide.html][Google Javascript CDN]].
+Org-Project builds upon other important tools, in particular [[http://jquery.com][jQuery]]
+
+** Using Org-Project
+
+To use Org-Project in your Org-mode file, simply copy all project
+files (that is, =main.js=, =main.css=, and =org-project.setup=, and
+optionally =hyphenator.js=) to the same directory as your Org-mode
+file and add the line:
+
+#+BEGIN_SRC org
+#+SETUPFILE: org-project.setup
+#+END_SRC
+
+You can choose to include or not include the =hyphenator.js= file,
+which hyphenates the document.  It may cause lag on very old machines
+or browsers, but visibly improves the document.
+
+** License
+
+Org-Project is fully open-source being licensed under the BSD License,
+which follows.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the
+   distribution.
+3. The name of the author may not be used to endorse or promote
+   products derived from this software without specific prior written
+   permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+* Todo List
+** TODO Improve styling of TODO entries
+** TODO Investigate why Table of Contents is necessary
+** TODO Improve styling of tags
+** TODO Allow filtering by tag?
+** TODO Allow hiding source code commentary?
+* Changelog
+** Version 0.1
+   Initial working version.  Basic page switching functionality and
+   styling.
+* Source code
+
+The basic idea is to use Javascript to loop over a page, find all of
+the first-level sections, and separate them out into "pages".  We'll
+index all of the headings into list items in the =#pages= list and use
+them like buttons to switch between the pages.
+
+** Setup-file
+
+Org-mode provides a =#+SETUPFILE= pragma to allow you to split your
+header into parts.  We'll provide a setup file of our own in
+=org-project.setup= to make Org-Project easy to use.
+
+#+BEGIN_SRC org :tangle org-project.setup
+# -*- mode: org; -*-
+#+END_SRC
+
+Now, our JavaScript requires jQuery, but honestly, I have enough
+copies of various versions of that library lying around my hard drive,
+so I'm going to use the Google CDN.  It'll probably make the Internet
+better, too!
+
+#+BEGIN_SRC org :tangle org-project.setup
+#+STYLE: <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+#+END_SRC
+
+We'll need a Javascript file and some CSS.  To make sure they're
+included in the header, we use the =#+STYLE= pragma, even for
+JavaScript files.  Org-mode just dumps the HTML, so no matter.
+
+#+BEGIN_SRC org :tangle org-project.setup
+#+STYLE: <link rel="stylesheet" type="text/css" href="org-project.css"/>
+#+STYLE: <script type="text/javascript" src="org-project.js"></script>
+#+END_SRC
+
+Finally, the super-neat Hyphenate.js project is a small JavaScript
+library to hyphenate documents.  It visibly improves the look of large
+amounts of text, so we include it as well.  If it's missing, no great
+loss.
+
+#+BEGIN_SRC org :tangle org-project.setup
+#+STYLE: <script type="text/javascript" src="hyphenate.js"></script>
+#+END_SRC
+
+Org-mode likes to sprinkle section numbers throughout the document,
+but that looks sort of ugly, so we turn that off.  Also, for odd
+reasons, Org-Project doesn't work without the table of contents being
+produced (though we hide it ourselves).
+
+#+BEGIN_SRC org :tangle org-project.setup
+#+OPTIONS: toc:t num:nil
+#+END_SRC
+
+** JavaScript
+
+The JavaScript is run when jQuery is already loaded, so we can make
+extensive use of it if we wish.  So we start by registering its onload
+function.
+
+#+BEGIN_SRC javascript :tangle org-project.js
+$(function () {
+    if (!$("#pages").length) {
+        pageSection();
+    }
+    
+    if (window.location.hash) {
+        $("#pages li a").filter(function () {
+            return $(this).attr("href") == window.location.hash;
+        }).click();
+        window.location.hash = window.location.hash
+    }
+
+    $("#content").addClass("hyphenate");
+    if (Hyphenator) {
+        Hyphenator.run();
+    }
+
+    $(".outline-2 h2").css({
+        "font-size": 0,
+        "margin": 0,
+        "padding": 0,
+        "height": 0,
+    });
+});
+
+function pageSection() {
+    var sections = new Array();
+    console.log(".outline-2");
+    $(".outline-2").each(function (i) {
+        var text = $(this).find("h2").text();
+        if (text) {
+            text = text.trim().replace(/\[[\d/%]+\]/, "");
+            text = text.trim().replace(/^[\d\.]\s+/, "");
+            sections.push({text: text, id: i});
+        }
+    });
+
+    var pages = $("<ul id='pages'></ul>");
+    
+    for(var i=0; i < sections.length; i++) {
+        var s = sections[i];
+        elem = $("<li><a href='#" + s.id + "'>" + s.text + "</a></li>");
+        elem.find("a").click(function() {
+            el = $(this)
+
+            $(".outline-2").hide();
+            $("#pages li").removeClass("selected");
+            $(".outline-2").eq($(this).attr("href").slice(1)).show();
+            $("#pages li").filter(function () {
+                return $(this).find("a").attr("href") == "#" + el.attr("href").slice(1)
+            }).addClass("selected");
+            return 0;
+        });
+        pages.append(elem);
+    }
+
+    $("#table-of-contents").eq(0).after(pages);
+
+    $("#innertoc a").click(function() {
+        if ($($(this).attr("href")).height() == 0) {
+            var sec = $($(this).attr("href")).parent(".outline-2").find("h2").html();
+            $("#pages li a").filter(function () {
+                return $(this).html() == sec;
+            }).click();
+        }
+    });
+
+    $("#pages li a").eq(1).click();
+}
+#+END_SRC
+
+** Styling
+
+Our styling has to accomplish three tasks: it must set up pages to be
+switched; it must set up the pages buttons; and it must make the page
+look pretty.  Let's accomplish these in turn.
+
+#+BEGIN_SRC css :tangle org-project.css
+html, body {
+    padding: 0;
+    margin: 0 .1em;
+}
+
+#content {
+    padding: 1em 3em;
+    max-width: 650px;
+    margin: 0 auto;
+    background: #EEEEEC;
+    border-left: 3px solid #D3D7CF;
+    border-right: 3px solid #D3D7CF;
+    font-size: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+h1 {
+    font-size: 140%;
+    margin-top: 0;
+    background: #D3D7CF;
+    padding: .5em;
+    margin: 0 -3em;
+}
+
+p {
+    text-align: justify;
+}
+
+h2 {
+    clear: both;
+}
+
+pre {
+    border-left: 5px solid #BABDB6;
+    padding: 10px;
+    line-height: 1.0em;
+    color: black;
+}
+
+#pages {
+    list-style: none inside;
+    clear: both;
+    margin: 0 -.2em;
+    padding: 10px 0;
+    border-top: 1px solid black;
+    height: 1em;
+}
+
+#pages:after {
+    clear:both;
+}
+
+#pages li {
+    float: left;
+    margin: .6em .2em;
+}
+
+#pages li a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.0em;
+    font-weight: bold;
+    border: .3em solid #BABDB6;
+    padding: .2em;
+}
+
+#pages li a:hover, #pages li.selected a {
+    background: #D3D7CF;
+}
+
+#pages li.selected a {
+    cursor: default;
+}
+
+#table-of-contents {
+    display: none;
+}
+
+#postamble * {
+    display: none;
+}
+#+END_SRC

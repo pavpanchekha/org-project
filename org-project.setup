@@ -1,6 +1,11 @@
-# -*- mode: org -*-
-#+OPTIONS: toc:nil num:nil
-#+STYLE: <link rel="stylesheet" href="main.css"/>
-#+STYLE: <script src="main.css"></script>
-#+STYLE: <script src="hyphenator.css"></script>
+
+# -*- mode: org; -*-
+
 #+STYLE: <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+#+STYLE: <link rel="stylesheet" type="text/css" href="org-project.css"/>
+#+STYLE: <script type="text/javascript" src="org-project.js"></script>
+
+#+STYLE: <script type="text/javascript" src="hyphenate.js"></script>
+
+#+OPTIONS: toc:t num:nil
