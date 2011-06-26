@@ -28,15 +28,15 @@ p {
     text-align: justify;
 }
 
-h2 {
-    clear: both;
-}
-
 pre {
     border-left: 5px solid #BABDB6;
     padding: 10px;
     line-height: 1.0em;
     color: black;
+}
+
+#postamble {
+    display: none;
 }
 
 #pages {
@@ -48,8 +48,8 @@ pre {
     height: 1em;
 }
 
-#pages:after {
-    clear:both;
+h2 {
+    clear: both;
 }
 
 #pages li {
@@ -57,7 +57,7 @@ pre {
     margin: .6em .2em;
 }
 
-#pages li a {
+#pages a {
     text-decoration: none;
     color: black;
     font-size: 1.0em;
@@ -66,18 +66,11 @@ pre {
     padding: .2em;
 }
 
-#pages li a:hover, #pages li.selected a {
+#pages li a:hover {
     background: #D3D7CF;
 }
 
 #pages li.selected a {
     cursor: default;
-}
-
-#table-of-contents {
-    display: none;
-}
-
-#postamble * {
-    display: none;
+    background: #BABDB6;
 }
