@@ -7,7 +7,7 @@ lang="en" xml:lang="en">
 <title>Org-Project: Pretty Org-mode Programs</title>
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2011-06-26 03:02:05 PDT"/>
+<meta name="generated" content="2011-06-26 03:47:47 PDT"/>
 <meta name="author" content="Pavel Panchekha <me@pavpanchekha.com>"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -54,6 +54,14 @@ lang="en" xml:lang="en">
                                  font-weight:bold; }
   /*]]>*/-->
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="org-project.css"/>
+<script type="text/javascript" src="org-project.js"></script>
+<script type="text/javascript" src="hyphenate.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="org-project.css"/>
+<script type="text/javascript" src="org-project.js"></script>
+<script type="text/javascript" src="hyphenate.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="org-project.css"/>
 <script type="text/javascript" src="org-project.js"></script>
@@ -117,9 +125,13 @@ directly with Org-mode's HTML export tool.
 </li>
 <li><a href="#sec-4">Source code </a>
 <ul>
-<li><a href="#sec-4_1">Setup-file </a></li>
-<li><a href="#sec-4_2">JavaScript </a></li>
-<li><a href="#sec-4_3">Styling </a></li>
+<li><a href="#sec-4_1">Setup-file </a>
+<ul>
+<li><a href="#sec-4_1_1">JavaScript on-load </a></li>
+<li><a href="#sec-4_1_2">The <code>pageSection</code> function </a></li>
+</ul>
+</li>
+<li><a href="#sec-4_2">Styling </a></li>
 </ul>
 </li>
 </ul>
@@ -373,19 +385,25 @@ produced (though we hide it ourselves).
 
 
 
-</div>
 
 </div>
 
-<div id="outline-container-4_2" class="outline-3">
-<h3 id="sec-4_2">JavaScript </h3>
-<div class="outline-text-3" id="text-4_2">
+<div id="outline-container-4_1_1" class="outline-4">
+<h4 id="sec-4_1_1">JavaScript on-load </h4>
+<div class="outline-text-4" id="text-4_1_1">
 
 
 <p>
 The JavaScript is run when jQuery is already loaded, so we can make
 extensive use of it if we wish.  So we start by registering its onload
-function.
+function.  We need to do four things on-load: make the list of pages,
+possibly switch to one if a hash is present, trigger the hyphenator,
+and hide all of the now-unnecessary titles.
+</p>
+<p>
+First we call out to a <code>pageSection</code> to build the section/page list.
+Note that we already do this if we haven't already; Org-mode has the
+odd habit of sometimes including a JavaScript file multiple times.
 </p>
 
 
@@ -394,71 +412,78 @@ function.
     <span style="color: #a020f0;">if</span> (!$(<span style="color: #8b2252;">"#pages"</span>).length) {
         pageSection();
     }
-    
-    <span style="color: #a020f0;">if</span> (window.location.hash) {
-        $(<span style="color: #8b2252;">"#pages li a"</span>).filter(<span style="color: #a020f0;">function</span> () {
+</pre>
+
+
+
+<p>
+Next we need to switch to the right page is the URL hash is present.
+This is so that people can, say, bookmark one of the pages.  Now, what
+we need to do is:
+</p>
+<ul>
+<li>Find the <code>a</code> element in the DOM
+</li>
+<li>Walk up to the page itself
+</li>
+<li>Figure out which page to click
+</li>
+<li>Click it to switch to it
+</li>
+<li>Click the link to trigger the browser's scroller
+
+
+
+
+<pre class="src src-javascript">    <span style="color: #a020f0;">if</span> (window.location.hash) {
+        $(<span style="color: #8b2252;">"a"</span>).filter(<span style="color: #a020f0;">function</span> () {
             <span style="color: #a020f0;">return</span> $(<span style="color: #008b8b;">this</span>).attr(<span style="color: #8b2252;">"href"</span>) == window.location.hash;
+        }).each(<span style="color: #a020f0;">function</span> () {
+            <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">id</span> = $(<span style="color: #008b8b;">this</span>).parent(<span style="color: #8b2252;">".outline-2"</span>).data(<span style="color: #8b2252;">"page-id"</span>);
+            <span style="color: #a020f0;">if</span> (id) {
+                $(<span style="color: #8b2252;">"$pages li a"</span>).click();
+            }
         }).click();
         window.location.hash = window.location.hash
     }
+</pre>
 
-    $(<span style="color: #8b2252;">"#content"</span>).addClass(<span style="color: #8b2252;">"hyphenate"</span>);
-    <span style="color: #a020f0;">if</span> (Hyphenator) {
-        Hyphenator.run();
+
+</li>
+</ul>
+
+<p>
+Next we want to run the hyphenation script if it exists; we just put
+the <code>run</code> command in a conditional.  Note that this requires a certain
+class on our content element.
+</p>
+
+
+
+<pre class="src src-javascript">    $(<span style="color: #8b2252;">"#content"</span>).addClass(<span style="color: #8b2252;">"hyphenate"</span>);
+    <span style="color: #a020f0;">if</span> (window.Hyphenator) {
+        window.Hyphenator.run();
     }
+</pre>
 
-    $(<span style="color: #8b2252;">".outline-2 h2"</span>).css({
-        <span style="color: #8b2252;">"font-size"</span>: 0,
+
+
+<p>
+Finally, we want to hide all of the <code>h2</code> tags.  But we use those tags
+to clear floating elements (if your page has lots of top-level
+headings, say).  So instead we just systematically zero all
+measurements of their box.
+</p>
+
+
+
+<pre class="src src-javascript">    $(<span style="color: #8b2252;">".outline-2 h2"</span>).css({
+        <span style="color: #8b2252;">"fontSize"</span>: 0,
         <span style="color: #8b2252;">"margin"</span>: 0,
         <span style="color: #8b2252;">"padding"</span>: 0,
         <span style="color: #8b2252;">"height"</span>: 0,
     });
 });
-
-<span style="color: #a020f0;">function</span> <span style="color: #0000ff;">pageSection</span>() {
-    <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">sections</span> = <span style="color: #a020f0;">new</span> <span style="color: #228b22;">Array</span>();
-    console.log(<span style="color: #8b2252;">".outline-2"</span>);
-    $(<span style="color: #8b2252;">".outline-2"</span>).each(<span style="color: #a020f0;">function</span> (<span style="color: #a0522d;">i</span>) {
-        <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">text</span> = $(<span style="color: #008b8b;">this</span>).find(<span style="color: #8b2252;">"h2"</span>).text();
-        <span style="color: #a020f0;">if</span> (text) {
-            text = text.trim().replace(<span style="color: #8b2252;">/\[[\d/</span>%]+\]/, <span style="color: #8b2252;">""</span>);
-            text = text.trim().replace(<span style="color: #8b2252;">/^[\d\.]\s+/</span>, <span style="color: #8b2252;">""</span>);
-            sections.push({text: text, id: i});
-        }
-    });
-
-    <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">pages</span> = $(<span style="color: #8b2252;">"&lt;ul id='pages'&gt;&lt;/ul&gt;"</span>);
-    
-    <span style="color: #a020f0;">for</span>(<span style="color: #a020f0;">var</span> <span style="color: #a0522d;">i</span>=0; i &lt; sections.length; i++) {
-        <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">s</span> = sections[i];
-        elem = $(<span style="color: #8b2252;">"&lt;li&gt;&lt;a href='#"</span> + s.id + <span style="color: #8b2252;">"'&gt;"</span> + s.text + <span style="color: #8b2252;">"&lt;/a&gt;&lt;/li&gt;"</span>);
-        elem.find(<span style="color: #8b2252;">"a"</span>).click(<span style="color: #a020f0;">function</span>() {
-            el = $(<span style="color: #008b8b;">this</span>)
-
-            $(<span style="color: #8b2252;">".outline-2"</span>).hide();
-            $(<span style="color: #8b2252;">"#pages li"</span>).removeClass(<span style="color: #8b2252;">"selected"</span>);
-            $(<span style="color: #8b2252;">".outline-2"</span>).eq($(<span style="color: #008b8b;">this</span>).attr(<span style="color: #8b2252;">"href"</span>).slice(1)).show();
-            $(<span style="color: #8b2252;">"#pages li"</span>).filter(<span style="color: #a020f0;">function</span> () {
-                <span style="color: #a020f0;">return</span> $(<span style="color: #008b8b;">this</span>).find(<span style="color: #8b2252;">"a"</span>).attr(<span style="color: #8b2252;">"href"</span>) == <span style="color: #8b2252;">"#"</span> + el.attr(<span style="color: #8b2252;">"href"</span>).slice(1)
-            }).addClass(<span style="color: #8b2252;">"selected"</span>);
-            <span style="color: #a020f0;">return</span> 0;
-        });
-        pages.append(elem);
-    }
-
-    $(<span style="color: #8b2252;">"#table-of-contents"</span>).eq(0).after(pages);
-
-    $(<span style="color: #8b2252;">"#innertoc a"</span>).click(<span style="color: #a020f0;">function</span>() {
-        <span style="color: #a020f0;">if</span> ($($(<span style="color: #008b8b;">this</span>).attr(<span style="color: #8b2252;">"href"</span>)).height() == 0) {
-            <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">sec</span> = $($(<span style="color: #008b8b;">this</span>).attr(<span style="color: #8b2252;">"href"</span>)).parent(<span style="color: #8b2252;">".outline-2"</span>).find(<span style="color: #8b2252;">"h2"</span>).html();
-            $(<span style="color: #8b2252;">"#pages li a"</span>).filter(<span style="color: #a020f0;">function</span> () {
-                <span style="color: #a020f0;">return</span> $(<span style="color: #008b8b;">this</span>).html() == sec;
-            }).click();
-        }
-    });
-
-    $(<span style="color: #8b2252;">"#pages li a"</span>).eq(1).click();
-}
 </pre>
 
 
@@ -467,15 +492,131 @@ function.
 
 </div>
 
-<div id="outline-container-4_3" class="outline-3">
-<h3 id="sec-4_3">Styling </h3>
-<div class="outline-text-3" id="text-4_3">
+<div id="outline-container-4_1_2" class="outline-4">
+<h4 id="sec-4_1_2">The <code>pageSection</code> function </h4>
+<div class="outline-text-4" id="text-4_1_2">
+
+
+<p>
+We want to create an associative array of section text to page id.
+This page id is later used in URL hashes and such.
+</p>
+
+
+
+<pre class="src src-javascript"><span style="color: #a020f0;">function</span> <span style="color: #0000ff;">pageSection</span>() {
+    <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">sections</span> = <span style="color: #a020f0;">new</span> <span style="color: #228b22;">Array</span>();
+</pre>
+
+
+
+<p>
+Org-mode uses the <code>outline-2</code> class on all top-level headings (why 2?
+Probably because it has an <code>h2</code> inside, but it's still confusing).  We
+just take each in turn and add it to the array.  We also add the page
+ID as data to the page itself, so we can later easily find it.
+</p>
+<p>
+We also want to clear some basic cruft from the section titles.  Of
+course, as a general rule, you should keep them short, but beyond that
+we have to clear out numbers from numbered sections and also those
+[0/0] things that Org-mode can make use of.
+</p>
+
+
+
+<pre class="src src-javascript">    $(<span style="color: #8b2252;">".outline-2"</span>).each(<span style="color: #a020f0;">function</span> (<span style="color: #a0522d;">i</span>) {
+        <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">text</span> = $(<span style="color: #008b8b;">this</span>).find(<span style="color: #8b2252;">"h2"</span>).text();
+        <span style="color: #a020f0;">if</span> (text) {
+            text = text.trim().replace(<span style="color: #8b2252;">/\[[\d/</span>%]+\]/, <span style="color: #8b2252;">""</span>);
+            text = text.trim().replace(<span style="color: #8b2252;">/^[\d\.]\s+/</span>, <span style="color: #8b2252;">""</span>);
+            sections.push({text: text, id: i});
+            $(<span style="color: #008b8b;">this</span>).data(<span style="color: #8b2252;">"page-id"</span>, i);
+        }
+    });
+</pre>
+
+
+
+<p>
+Now we need to create and add all of our buttons.  Each button will
+just be a list item with a link inside.  The link points to <code>#$id</code>,
+where <code>$id</code> is the page id.  So that we can be bookmarked by page and
+such.
+</p>
+
+
+
+<pre class="src src-javascript">    <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">pages</span> = $(<span style="color: #8b2252;">"&lt;ul id='pages'&gt;&lt;/ul&gt;"</span>);
+    
+    <span style="color: #a020f0;">for</span>(<span style="color: #a020f0;">var</span> <span style="color: #a0522d;">i</span>=0; i &lt; sections.length; i++) {
+        <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">s</span> = sections[i];
+        elem = $(<span style="color: #8b2252;">"&lt;li&gt;&lt;a href='#"</span> + s.id + <span style="color: #8b2252;">"'&gt;"</span> + s.text + <span style="color: #8b2252;">"&lt;/a&gt;&lt;/li&gt;"</span>);
+        pages.append(elem);
+</pre>
+
+
+
+<p>
+Now to establish the click handler for these buttons.  We're going to
+want to hide all currently shown pages and show the new one.  We also
+want to add the <code>selected</code> class from all of the buttons and then give
+it back to the current one.  Finally we return a value that propogates
+the event.
+</p>
+
+
+
+<pre class="src src-javascript">        elem.find(<span style="color: #8b2252;">"a"</span>).click(<span style="color: #a020f0;">function</span>() {
+            <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">el</span> = $(<span style="color: #008b8b;">this</span>)
+            <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">id</span> = $(<span style="color: #008b8b;">this</span>).attr(<span style="color: #8b2252;">"href"</span>).slice(1);
+
+            $(<span style="color: #8b2252;">".outline-2"</span>).hide();
+            $(<span style="color: #8b2252;">".outline-2"</span>).eq(id).show();
+
+            $(<span style="color: #8b2252;">"#pages li"</span>).removeClass(<span style="color: #8b2252;">"selected"</span>);
+            $(<span style="color: #008b8b;">this</span>).parent(<span style="color: #8b2252;">"li"</span>).addClass(<span style="color: #8b2252;">"selected"</span>);
+            <span style="color: #a020f0;">return</span> 0;
+        });
+    }
+</pre>
+
+
+
+<p>
+Lastly we must attach our button bar to the page.  Just for touch-up,
+we now want to hide the table of contents (which we've bettered) and
+go to the first page.
+</p>
+
+
+
+<pre class="src src-javascript">    $(<span style="color: #8b2252;">"#table-of-contents"</span>).after(pages);
+    $(<span style="color: #8b2252;">"#table-of-contents"</span>).hide();
+    $(<span style="color: #8b2252;">"#pages li a"</span>).eq(0).click();
+}
+</pre>
+
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4_2" class="outline-3">
+<h3 id="sec-4_2">Styling </h3>
+<div class="outline-text-3" id="text-4_2">
 
 
 <p>
 Our styling has to accomplish three tasks: it must set up pages to be
 switched; it must set up the pages buttons; and it must make the page
-look pretty.  Let's accomplish these in turn.
+look pretty.
+</p>
+<p>
+First, we need to reset the <code>html</code> and <code>body</code> padding lest we get ugly
+white borders around the document.
 </p>
 
 
@@ -484,8 +625,27 @@ look pretty.  Let's accomplish these in turn.
     <span style="color: #a0522d;">padding</span>: 0;
     <span style="color: #a0522d;">margin</span>: 0 .1em;
 }
+</pre>
 
-<span style="color: #0000ff;">#content </span>{
+
+
+<p>
+Now, in the making things pretty department, we're going to grab the
+content and put it into a grayish column in the center of the screen,
+then put the title stretching across that column with the same color
+as the border.
+</p>
+<p>
+Note that we set <code>overflow-x</code> to hidden; this is because of the use of
+negative margins below.  Also, we use, of course, the standard
+<code>margin: auto</code> trick to center the column and a negative margin to
+make it look like the header is hierarchically higher than the main
+content.
+</p>
+
+
+
+<pre class="src src-css"><span style="color: #0000ff;">#content </span>{
     <span style="color: #a0522d;">padding</span>: 1em 3em;
     <span style="color: #a0522d;">max-width</span>: 650px;
     <span style="color: #a0522d;">margin</span>: 0 auto;
@@ -504,23 +664,54 @@ look pretty.  Let's accomplish these in turn.
     <span style="color: #a0522d;">padding</span>: .5em;
     <span style="color: #a0522d;">margin</span>: 0 -3em;
 }
+</pre>
 
-<span style="color: #0000ff;">p </span>{
-    <span style="color: #a0522d;">text-align</span>: justify;
+
+
+<p>
+We also do some basic styling to justify text, make source code look a
+bit more stand-out, and also hide the ugly footer that Org-mode adds
+to everything.
+</p>
+
+
+
+<pre class="src src-javascript">p {
+    text-align: justify;
 }
 
-<span style="color: #0000ff;">h2 </span>{
-    <span style="color: #a0522d;">clear</span>: both;
+pre {
+    border-left: 5px solid #BABDB6;
+    padding: 10px;
+    line-height: 1.0em;
+    color: black;
 }
 
-<span style="color: #0000ff;">pre </span>{
-    <span style="color: #a0522d;">border-left</span>: 5px solid #BABDB6;
-    <span style="color: #a0522d;">padding</span>: 10px;
-    <span style="color: #a0522d;">line-height</span>: 1.0em;
-    <span style="color: #a0522d;">color</span>: black;
+#postamble {
+    display: none;
 }
+</pre>
 
-<span style="color: #0000ff;">#pages </span>{
+
+
+<p>
+Now, our pages list will use floating to make the list horizontal, so we need
+the element that comes after them to clear floats; this element is <code>h2</code>.  Later,
+we won't be able to hide it because of this choice (hidden elements don't
+clear), but this is cleaner than ugly <code>:after</code> hacks.
+</p>
+<p>
+We also add a negative horizontal margin to the pages list because the
+individual list items have margins.  That this has to be done is very annoying.
+</p>
+<p>
+We also add a border on top to more clearly visually separate the header from
+the pages.
+</p>
+
+
+
+<pre class="src src-css"><span style="color: #0000ff;">#pages </span>{
     <span style="color: #a0522d;">list-style</span>: none inside;
     <span style="color: #a0522d;">clear</span>: both;
     <span style="color: #a0522d;">margin</span>: 0 -.2em;
@@ -529,16 +720,31 @@ look pretty.  Let's accomplish these in turn.
     <span style="color: #a0522d;">height</span>: 1em;
 }
 
-<span style="color: #0000ff;">#pages:after </span>{
-    <span style="color: #a0522d;">clear</span>:both;
+<span style="color: #0000ff;">h2 </span>{
+    <span style="color: #a0522d;">clear</span>: both;
 }
+</pre>
 
-<span style="color: #0000ff;">#pages li </span>{
+
+
+<p>
+For the list items themselves, we float them with padding to get the button bar
+effect.
+</p>
+<p>
+We also run the standard tricks for making the selected element not look
+clickable, and of course we turn off the default blue-underlined style for
+links.
+</p>
+
+
+
+<pre class="src src-css"><span style="color: #0000ff;">#pages li </span>{
     <span style="color: #a0522d;">float</span>: left;
     <span style="color: #a0522d;">margin</span>: .6em .2em;
 }
 
-<span style="color: #0000ff;">#pages li a </span>{
+<span style="color: #0000ff;">#pages a </span>{
     <span style="color: #a0522d;">text-decoration</span>: none;
     <span style="color: #a0522d;">color</span>: black;
     <span style="color: #a0522d;">font-size</span>: 1.0em;
@@ -547,20 +753,13 @@ look pretty.  Let's accomplish these in turn.
     <span style="color: #a0522d;">padding</span>: .2em;
 }
 
-<span style="color: #0000ff;">#pages li a:hover, #pages li.selected a </span>{
+<span style="color: #0000ff;">#pages li a:hover </span>{
     <span style="color: #a0522d;">background</span>: #D3D7CF;
 }
 
 <span style="color: #0000ff;">#pages li.selected a </span>{
     <span style="color: #a0522d;">cursor</span>: default;
-}
-
-<span style="color: #0000ff;">#table-of-contents </span>{
-    <span style="color: #a0522d;">display</span>: none;
-}
-
-<span style="color: #0000ff;">#postamble * </span>{
-    <span style="color: #a0522d;">display</span>: none;
+    <span style="color: #a0522d;">background</span>: #BABDB6;
 }
 </pre>
 
