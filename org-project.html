@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+lang="en" xml:lang="en">
+<head>
+<title>Org-Project: Pretty Org-mode Programs</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2011-06-26 03:02:05 PDT"/>
+<meta name="author" content="Pavel Panchekha <me@pavpanchekha.com>"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="org-project.css"/>
+<script type="text/javascript" src="org-project.js"></script>
+<script type="text/javascript" src="hyphenate.js"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">Org-Project: Pretty Org-mode Programs</h1>
+<p>Org-Project is a set of options and themes for <a href="http://orgmode.org">Org-mode</a> optimized for
+literate programs written with Org-mode.  It is designed to work
+directly with Org-mode's HTML export tool.
+</p>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">About </a>
+<ul>
+<li><a href="#sec-1_1">Using Org-Project </a></li>
+<li><a href="#sec-1_2">License </a></li>
+</ul>
+</li>
+<li><a href="#sec-2">Todo List </a>
+<ul>
+<li><a href="#sec-2_1">Improve styling of TODO entries </a></li>
+<li><a href="#sec-2_2">Investigate why Table of Contents is necessary </a></li>
+<li><a href="#sec-2_3">Improve styling of tags </a></li>
+<li><a href="#sec-2_4">Allow filtering by tag? </a></li>
+<li><a href="#sec-2_5">Allow hiding source code commentary? </a></li>
+</ul>
+</li>
+<li><a href="#sec-3">Changelog </a>
+<ul>
+<li><a href="#sec-3_1">Version 0.1 </a></li>
+</ul>
+</li>
+<li><a href="#sec-4">Source code </a>
+<ul>
+<li><a href="#sec-4_1">Setup-file </a></li>
+<li><a href="#sec-4_2">JavaScript </a></li>
+<li><a href="#sec-4_3">Styling </a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1">About </h2>
+<div class="outline-text-2" id="text-1">
+
+
+<p>
+Org-Project is a set of styles and themes written by <a href="mailto:me@pavpanchekha.com">Pavel Panchekha</a>
+for exporting Org-mode literate programs.  With it, Org-mode's default
+HTML export should be all you need to generate and elegant project
+page.
+</p>
+<p>
+and <a href="http://code.google.com/p/hyphenator/">hyphenator.js</a>, as well as on the <a href="http://code.google.com/apis/libraries/devguide.html">Google Javascript CDN</a>.
+Org-Project builds upon other important tools, in particular <a href="http://jquery.com">jQuery</a>
+</p>
+
+</div>
+
+<div id="outline-container-1_1" class="outline-3">
+<h3 id="sec-1_1">Using Org-Project </h3>
+<div class="outline-text-3" id="text-1_1">
+
+
+<p>
+To use Org-Project in your Org-mode file, simply copy all project
+files (that is, <code>main.js</code>, <code>main.css</code>, and <code>org-project.setup</code>, and
+optionally <code>hyphenator.js</code>) to the same directory as your Org-mode
+file and add the line:
+</p>
+
+
+
+<pre class="src src-org"><span style="color: #b22222;">#+SETUPFILE: org-project.setup
+</span></pre>
+
+
+
+<p>
+You can choose to include or not include the <code>hyphenator.js</code> file,
+which hyphenates the document.  It may cause lag on very old machines
+or browsers, but visibly improves the document.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-1_2" class="outline-3">
+<h3 id="sec-1_2">License </h3>
+<div class="outline-text-3" id="text-1_2">
+
+
+<p>
+Org-Project is fully open-source being licensed under the BSD License,
+which follows.
+</p>
+<p>
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+</p>
+<ol>
+<li>Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+</li>
+<li>Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the
+   distribution.
+</li>
+<li>The name of the author may not be used to endorse or promote
+   products derived from this software without specific prior written
+   permission.
+</li>
+</ol>
+
+<p>
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2">Todo List </h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2_1" class="outline-3">
+<h3 id="sec-2_1"><span class="todo TODO"> TODO</span> Improve styling of TODO entries </h3>
+<div class="outline-text-3" id="text-2_1">
+
+</div>
+
+</div>
+
+<div id="outline-container-2_2" class="outline-3">
+<h3 id="sec-2_2"><span class="todo TODO"> TODO</span> Investigate why Table of Contents is necessary </h3>
+<div class="outline-text-3" id="text-2_2">
+
+</div>
+
+</div>
+
+<div id="outline-container-2_3" class="outline-3">
+<h3 id="sec-2_3"><span class="todo TODO"> TODO</span> Improve styling of tags </h3>
+<div class="outline-text-3" id="text-2_3">
+
+</div>
+
+</div>
+
+<div id="outline-container-2_4" class="outline-3">
+<h3 id="sec-2_4"><span class="todo TODO"> TODO</span> Allow filtering by tag? </h3>
+<div class="outline-text-3" id="text-2_4">
+
+</div>
+
+</div>
+
+<div id="outline-container-2_5" class="outline-3">
+<h3 id="sec-2_5"><span class="todo TODO"> TODO</span> Allow hiding source code commentary? </h3>
+<div class="outline-text-3" id="text-2_5">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3">Changelog </h2>
+<div class="outline-text-2" id="text-3">
+
+
+</div>
+
+<div id="outline-container-3_1" class="outline-3">
+<h3 id="sec-3_1">Version 0.1 </h3>
+<div class="outline-text-3" id="text-3_1">
+
+<p>   Initial working version.  Basic page switching functionality and
+   styling.
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4">Source code </h2>
+<div class="outline-text-2" id="text-4">
+
+
+<p>
+The basic idea is to use Javascript to loop over a page, find all of
+the first-level sections, and separate them out into "pages".  We'll
+index all of the headings into list items in the <code>#pages</code> list and use
+them like buttons to switch between the pages.
+</p>
+
+</div>
+
+<div id="outline-container-4_1" class="outline-3">
+<h3 id="sec-4_1">Setup-file </h3>
+<div class="outline-text-3" id="text-4_1">
+
+
+<p>
+Org-mode provides a <code>#+SETUPFILE</code> pragma to allow you to split your
+header into parts.  We'll provide a setup file of our own in
+<code>org-project.setup</code> to make Org-Project easy to use.
+</p>
+
+
+
+<pre class="src src-org"><span style="color: #b22222;"># -*- mode: org; -*-</span>
+</pre>
+
+
+
+<p>
+Now, our JavaScript requires jQuery, but honestly, I have enough
+copies of various versions of that library lying around my hard drive,
+so I'm going to use the Google CDN.  It'll probably make the Internet
+better, too!
+</p>
+
+
+
+<pre class="src src-org"><span style="color: #b22222;">#+STYLE: &lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"&gt;&lt;/script&gt;
+</span></pre>
+
+
+
+<p>
+We'll need a Javascript file and some CSS.  To make sure they're
+included in the header, we use the <code>#+STYLE</code> pragma, even for
+JavaScript files.  Org-mode just dumps the HTML, so no matter.
+</p>
+
+
+
+<pre class="src src-org"><span style="color: #b22222;">#+STYLE: &lt;link rel="stylesheet" type="text/css" href="org-project.css"/&gt;
+#+STYLE: &lt;script type="text/javascript" src="org-project.js"&gt;&lt;/script&gt;
+</span></pre>
+
+
+
+<p>
+Finally, the super-neat Hyphenate.js project is a small JavaScript
+library to hyphenate documents.  It visibly improves the look of large
+amounts of text, so we include it as well.  If it's missing, no great
+loss.
+</p>
+
+
+
+<pre class="src src-org"><span style="color: #b22222;">#+STYLE: &lt;script type="text/javascript" src="hyphenate.js"&gt;&lt;/script&gt;
+</span></pre>
+
+
+
+<p>
+Org-mode likes to sprinkle section numbers throughout the document,
+but that looks sort of ugly, so we turn that off.  Also, for odd
+reasons, Org-Project doesn't work without the table of contents being
+produced (though we hide it ourselves).
+</p>
+
+
+
+<pre class="src src-org"><span style="color: #b22222;">#+OPTIONS: toc:t num:nil
+</span></pre>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4_2" class="outline-3">
+<h3 id="sec-4_2">JavaScript </h3>
+<div class="outline-text-3" id="text-4_2">
+
+
+<p>
+The JavaScript is run when jQuery is already loaded, so we can make
+extensive use of it if we wish.  So we start by registering its onload
+function.
+</p>
+
+
+
+<pre class="src src-javascript">$(<span style="color: #a020f0;">function</span> () {
+    <span style="color: #a020f0;">if</span> (!$(<span style="color: #8b2252;">"#pages"</span>).length) {
+        pageSection();
+    }
+    
+    <span style="color: #a020f0;">if</span> (window.location.hash) {
+        $(<span style="color: #8b2252;">"#pages li a"</span>).filter(<span style="color: #a020f0;">function</span> () {
+            <span style="color: #a020f0;">return</span> $(<span style="color: #008b8b;">this</span>).attr(<span style="color: #8b2252;">"href"</span>) == window.location.hash;
+        }).click();
+        window.location.hash = window.location.hash
+    }
+
+    $(<span style="color: #8b2252;">"#content"</span>).addClass(<span style="color: #8b2252;">"hyphenate"</span>);
+    <span style="color: #a020f0;">if</span> (Hyphenator) {
+        Hyphenator.run();
+    }
+
+    $(<span style="color: #8b2252;">".outline-2 h2"</span>).css({
+        <span style="color: #8b2252;">"font-size"</span>: 0,
+        <span style="color: #8b2252;">"margin"</span>: 0,
+        <span style="color: #8b2252;">"padding"</span>: 0,
+        <span style="color: #8b2252;">"height"</span>: 0,
+    });
+});
+
+<span style="color: #a020f0;">function</span> <span style="color: #0000ff;">pageSection</span>() {
+    <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">sections</span> = <span style="color: #a020f0;">new</span> <span style="color: #228b22;">Array</span>();
+    console.log(<span style="color: #8b2252;">".outline-2"</span>);
+    $(<span style="color: #8b2252;">".outline-2"</span>).each(<span style="color: #a020f0;">function</span> (<span style="color: #a0522d;">i</span>) {
+        <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">text</span> = $(<span style="color: #008b8b;">this</span>).find(<span style="color: #8b2252;">"h2"</span>).text();
+        <span style="color: #a020f0;">if</span> (text) {
+            text = text.trim().replace(<span style="color: #8b2252;">/\[[\d/</span>%]+\]/, <span style="color: #8b2252;">""</span>);
+            text = text.trim().replace(<span style="color: #8b2252;">/^[\d\.]\s+/</span>, <span style="color: #8b2252;">""</span>);
+            sections.push({text: text, id: i});
+        }
+    });
+
+    <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">pages</span> = $(<span style="color: #8b2252;">"&lt;ul id='pages'&gt;&lt;/ul&gt;"</span>);
+    
+    <span style="color: #a020f0;">for</span>(<span style="color: #a020f0;">var</span> <span style="color: #a0522d;">i</span>=0; i &lt; sections.length; i++) {
+        <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">s</span> = sections[i];
+        elem = $(<span style="color: #8b2252;">"&lt;li&gt;&lt;a href='#"</span> + s.id + <span style="color: #8b2252;">"'&gt;"</span> + s.text + <span style="color: #8b2252;">"&lt;/a&gt;&lt;/li&gt;"</span>);
+        elem.find(<span style="color: #8b2252;">"a"</span>).click(<span style="color: #a020f0;">function</span>() {
+            el = $(<span style="color: #008b8b;">this</span>)
+
+            $(<span style="color: #8b2252;">".outline-2"</span>).hide();
+            $(<span style="color: #8b2252;">"#pages li"</span>).removeClass(<span style="color: #8b2252;">"selected"</span>);
+            $(<span style="color: #8b2252;">".outline-2"</span>).eq($(<span style="color: #008b8b;">this</span>).attr(<span style="color: #8b2252;">"href"</span>).slice(1)).show();
+            $(<span style="color: #8b2252;">"#pages li"</span>).filter(<span style="color: #a020f0;">function</span> () {
+                <span style="color: #a020f0;">return</span> $(<span style="color: #008b8b;">this</span>).find(<span style="color: #8b2252;">"a"</span>).attr(<span style="color: #8b2252;">"href"</span>) == <span style="color: #8b2252;">"#"</span> + el.attr(<span style="color: #8b2252;">"href"</span>).slice(1)
+            }).addClass(<span style="color: #8b2252;">"selected"</span>);
+            <span style="color: #a020f0;">return</span> 0;
+        });
+        pages.append(elem);
+    }
+
+    $(<span style="color: #8b2252;">"#table-of-contents"</span>).eq(0).after(pages);
+
+    $(<span style="color: #8b2252;">"#innertoc a"</span>).click(<span style="color: #a020f0;">function</span>() {
+        <span style="color: #a020f0;">if</span> ($($(<span style="color: #008b8b;">this</span>).attr(<span style="color: #8b2252;">"href"</span>)).height() == 0) {
+            <span style="color: #a020f0;">var</span> <span style="color: #a0522d;">sec</span> = $($(<span style="color: #008b8b;">this</span>).attr(<span style="color: #8b2252;">"href"</span>)).parent(<span style="color: #8b2252;">".outline-2"</span>).find(<span style="color: #8b2252;">"h2"</span>).html();
+            $(<span style="color: #8b2252;">"#pages li a"</span>).filter(<span style="color: #a020f0;">function</span> () {
+                <span style="color: #a020f0;">return</span> $(<span style="color: #008b8b;">this</span>).html() == sec;
+            }).click();
+        }
+    });
+
+    $(<span style="color: #8b2252;">"#pages li a"</span>).eq(1).click();
+}
+</pre>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4_3" class="outline-3">
+<h3 id="sec-4_3">Styling </h3>
+<div class="outline-text-3" id="text-4_3">
+
+
+<p>
+Our styling has to accomplish three tasks: it must set up pages to be
+switched; it must set up the pages buttons; and it must make the page
+look pretty.  Let's accomplish these in turn.
+</p>
+
+
+
+<pre class="src src-css"><span style="color: #0000ff;">html, body </span>{
+    <span style="color: #a0522d;">padding</span>: 0;
+    <span style="color: #a0522d;">margin</span>: 0 .1em;
+}
+
+<span style="color: #0000ff;">#content </span>{
+    <span style="color: #a0522d;">padding</span>: 1em 3em;
+    <span style="color: #a0522d;">max-width</span>: 650px;
+    <span style="color: #a0522d;">margin</span>: 0 auto;
+    <span style="color: #a0522d;">background</span>: #EEEEEC;
+    <span style="color: #a0522d;">border-left</span>: 3px solid #D3D7CF;
+    <span style="color: #a0522d;">border-right</span>: 3px solid #D3D7CF;
+    <span style="color: #a0522d;">font-size</span>: 100%;
+    <span style="color: #a0522d;">overflow-y</span>: auto;
+    <span style="color: #a0522d;">overflow-x</span>: hidden;
+}
+
+<span style="color: #0000ff;">h1 </span>{
+    <span style="color: #a0522d;">font-size</span>: 140%;
+    <span style="color: #a0522d;">margin-top</span>: 0;
+    <span style="color: #a0522d;">background</span>: #D3D7CF;
+    <span style="color: #a0522d;">padding</span>: .5em;
+    <span style="color: #a0522d;">margin</span>: 0 -3em;
+}
+
+<span style="color: #0000ff;">p </span>{
+    <span style="color: #a0522d;">text-align</span>: justify;
+}
+
+<span style="color: #0000ff;">h2 </span>{
+    <span style="color: #a0522d;">clear</span>: both;
+}
+
+<span style="color: #0000ff;">pre </span>{
+    <span style="color: #a0522d;">border-left</span>: 5px solid #BABDB6;
+    <span style="color: #a0522d;">padding</span>: 10px;
+    <span style="color: #a0522d;">line-height</span>: 1.0em;
+    <span style="color: #a0522d;">color</span>: black;
+}
+
+<span style="color: #0000ff;">#pages </span>{
+    <span style="color: #a0522d;">list-style</span>: none inside;
+    <span style="color: #a0522d;">clear</span>: both;
+    <span style="color: #a0522d;">margin</span>: 0 -.2em;
+    <span style="color: #a0522d;">padding</span>: 10px 0;
+    <span style="color: #a0522d;">border-top</span>: 1px solid black;
+    <span style="color: #a0522d;">height</span>: 1em;
+}
+
+<span style="color: #0000ff;">#pages:after </span>{
+    <span style="color: #a0522d;">clear</span>:both;
+}
+
+<span style="color: #0000ff;">#pages li </span>{
+    <span style="color: #a0522d;">float</span>: left;
+    <span style="color: #a0522d;">margin</span>: .6em .2em;
+}
+
+<span style="color: #0000ff;">#pages li a </span>{
+    <span style="color: #a0522d;">text-decoration</span>: none;
+    <span style="color: #a0522d;">color</span>: black;
+    <span style="color: #a0522d;">font-size</span>: 1.0em;
+    <span style="color: #a0522d;">font-weight</span>: bold;
+    <span style="color: #a0522d;">border</span>: .3em solid #BABDB6;
+    <span style="color: #a0522d;">padding</span>: .2em;
+}
+
+<span style="color: #0000ff;">#pages li a:hover, #pages li.selected a </span>{
+    <span style="color: #a0522d;">background</span>: #D3D7CF;
+}
+
+<span style="color: #0000ff;">#pages li.selected a </span>{
+    <span style="color: #a0522d;">cursor</span>: default;
+}
+
+<span style="color: #0000ff;">#table-of-contents </span>{
+    <span style="color: #a0522d;">display</span>: none;
+}
+
+<span style="color: #0000ff;">#postamble * </span>{
+    <span style="color: #a0522d;">display</span>: none;
+}
+</pre>
+
+
+</div>
+</div>
+</div>
+<div id="postamble">
+<p class="author">Author: Pavel Panchekha <me@pavpanchekha.com></p>
+<p class="creator">Org version 7.5 with Emacs version 23</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+</div>
+</div>
+</body>
+</html>
