@@ -27,6 +27,8 @@ $(function () {
         "padding": 0,
         "height": 0,
     });
+
+    $(".todo, .done").parent().addClass("todo-item");
 });
 
 function pageSection() {
@@ -62,7 +64,16 @@ function pageSection() {
         });
     }
 
-    $("#table-of-contents").after(pages);
+    $(".outline-2:first").before(pages);
     $("#table-of-contents").hide();
     $("#pages li a").eq(0).click();
 }
+
+$(function () {
+    $(".tag").click(function () {
+        var cls = $(this).find("span").attr("class");
+        $(".todo-item:not(:has(." + cls + "))").parent().toggle();
+
+        $("." + cls).parent().toggleClass("selected");
+    }).addClass("clickable");
+});

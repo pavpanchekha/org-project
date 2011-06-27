@@ -74,3 +74,29 @@ h2 {
     cursor: default;
     background: #BABDB6;
 }
+
+.todo-item {
+    font-size: 1em;
+    margin: 10px 0;
+}
+
+.tag {
+    float: right;
+    display: block;
+    padding: 1px 2px;
+    background: #D3D7CF;
+    border: 2px solid #BABDB6;
+    border-radius: 2px;
+}
+
+.tag.clickable {
+    cursor: pointer;
+}
+
+.tag.clickable:hover {
+    background: #BABDB6;
+}
+
+.tag.selected {
+    background: #BABDB6;
+}
