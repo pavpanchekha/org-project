@@ -13,8 +13,8 @@ for exporting Org-mode literate programs.  With it, Org-mode's default
 HTML export should be all you need to generate and elegant project
 page.
 
-and [[http://code.google.com/p/hyphenator/][hyphenator.js]], as well as on the [[http://code.google.com/apis/libraries/devguide.html][Google Javascript CDN]].
 Org-Project builds upon other important tools, in particular [[http://jquery.com][jQuery]]
+and [[http://code.google.com/p/hyphenator/][hyphenator.js]], as well as on the [[http://code.google.com/apis/libraries/devguide.html][Google Javascript CDN]].
 
 ** Using Org-Project
 
@@ -63,13 +63,18 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 * Todo List
-** TODO Improve styling of TODO entries
-** TODO Investigate why Table of Contents is necessary
-** TODO Improve styling of tags
-** TODO Allow filtering by tag?
-** TODO Allow hiding source code commentary?
+** TODO Allow hiding source code commentary?                      :scripting:
+** TODO Should filtering by tags be per-heirarchy-level?                :bug:
 * Changelog
-** Version 0.1
+** Version 0.2                                                        :major:
+   Significantly improves styling of TODO lists by adding tag
+   filtering and smaller fonts.
+
+*** DONE Improve styling of TODO entries                            :styling:
+*** DONE Investigate why Table of Contents is necessary                 :bug:
+*** DONE Improve styling of tags                                    :styling:
+*** DONE Allow filtering by tag?                                  :scripting:
+** Version 0.1                                                        :major:
    Initial working version.  Basic page switching functionality and
    styling.
 * Source code
@@ -80,7 +85,7 @@ index all of the headings into list items in the =#pages= list and use
 them like buttons to switch between the pages.
 
 ** Setup-file
-
+   
 Org-mode provides a =#+SETUPFILE= pragma to allow you to split your
 header into parts.  We'll provide a setup file of our own in
 =org-project.setup= to make Org-Project easy to use.
@@ -117,15 +122,15 @@ loss.
 #+END_SRC
 
 Org-mode likes to sprinkle section numbers throughout the document,
-but that looks sort of ugly, so we turn that off.  Also, for odd
-reasons, Org-Project doesn't work without the table of contents being
-produced (though we hide it ourselves).
+but that looks sort of ugly, so we turn that off.  We hide the table
+of contents because we no longer need it.
 
 #+BEGIN_SRC org :tangle org-project.setup
-#+OPTIONS: toc:t num:nil
+#+OPTIONS: toc:nil num:nil
 #+END_SRC
 
-*** JavaScript on-load
+** JavaScript
+*** On-load
 
 The JavaScript is run when jQuery is already loaded, so we can make
 extensive use of it if we wish.  So we start by registering its onload
@@ -191,9 +196,15 @@ measurements of their box.
         "padding": 0,
         "height": 0,
     });
-});
 #+END_SRC
 
+Lastly, for CSS purposes, we're going to add a class to the actual
+headings containing TODO items.
+
+#+BEGIN_SRC javascript :tangle org-project.js
+    $(".todo, .done").parent().addClass("todo-item");
+});
+#+END_SRC
 *** The =pageSection= function
 
 We want to create an associative array of section text to page id.
@@ -266,10 +277,39 @@ we now want to hide the table of contents (which we've bettered) and
 go to the first page.
 
 #+BEGIN_SRC javascript :tangle org-project.js
-    $("#table-of-contents").after(pages);
+    $(".outline-2:first").before(pages);
     $("#table-of-contents").hide();
     $("#pages li a").eq(0).click();
 }
+#+END_SRC
+
+*** Tag Filtering
+
+Clicking on a tag should filter out sections not containing said tag.
+This emulates behavior in Emacs and makes Org-Project a fairly
+efficient bug tracking system.  We attach another handler to the
+on-ready event to add filtration features to Org-Project.
+
+Note that each =.tag= contains another =span= inside it whose class is
+the same as its contents; thus we can use that class for filtering.
+Also note that we hide the *parent* of the =.todo-item=; this hides
+the text below the headline as well as the headline itself.
+
+#+BEGIN_SRC javascript :tangle org-project.js
+$(function () {
+    $(".tag").click(function () {
+        var cls = $(this).find("span").attr("class");
+        $(".todo-item:not(:has(." + cls + "))").parent().toggle();
+#+END_SRC
+
+For CSS styling purposes, we add a class to tags to make it obvious
+that they are clickable and also add classes to selected tags (tags
+that we are filtering on.
+
+#+BEGIN_SRC javascript :tangle org-project.js
+        $("." + cls).parent().toggleClass("selected");
+    }).addClass("clickable");
+});
 #+END_SRC
 
 ** Styling
@@ -277,6 +317,8 @@ go to the first page.
 Our styling has to accomplish three tasks: it must set up pages to be
 switched; it must set up the pages buttons; and it must make the page
 look pretty.
+
+*** Basic page styling
 
 First, we need to reset the =html= and =body= padding lest we get ugly
 white borders around the document.
@@ -342,6 +384,8 @@ pre {
 }
 #+END_SRC
 
+*** Page list styling
+
 Now, our pages list will use floating to make the list horizontal, so we need
 the element that comes after them to clear floats; this element is =h2=.  Later,
 we won't be able to hide it because of this choice (hidden elements don't
@@ -396,6 +440,61 @@ links.
 
 #pages li.selected a {
     cursor: default;
+    background: #BABDB6;
+}
+#+END_SRC
+
+*** Todo Entry Styling
+
+Styling TODO entries is hard as Org-mode presents them as a header
+with a =.todo= or =.done= element inside.  CSS3, gives us the
+=:contains= selector that works perfectly with this use case, but it's
+not well supported.  You know what does support it?  jQuery!  So we'll
+add the =.todo-item= class to parents of =.todo= and =.done= elements
+with jQuery, and then style them here.
+
+#+BEGIN_SRC css :tangle org-project.css
+.todo-item {
+    font-size: 1em;
+    margin: 10px 0;
+}
+#+END_SRC
+
+*** Tag Styling
+
+Todo entries often carry tags (actually, many things can carry tags),
+so let's pick a good style for tags here.
+
+#+BEGIN_SRC css :tangle org-project.css
+.tag {
+    float: right;
+    display: block;
+    padding: 1px 2px;
+    background: #D3D7CF;
+    border: 2px solid #BABDB6;
+    border-radius: 2px;
+}
+#+END_SRC
+
+Our JavaScript above adds the =.clickable= class to tags that we can
+filter by (which might be none if JavaScript is disabled!).  We use
+that class to add hover effects and the proper cursor.
+
+#+BEGIN_SRC css :tangle org-project.css
+.tag.clickable {
+    cursor: pointer;
+}
+
+.tag.clickable:hover {
+    background: #BABDB6;
+}
+#+END_SRC
+
+We also use the =.selected= class to indicate that we are actively
+filtering on a tag.
+
+#+BEGIN_SRC css :tangle org-project.css
+.tag.selected {
     background: #BABDB6;
 }
 #+END_SRC

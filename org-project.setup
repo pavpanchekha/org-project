@@ -8,4 +8,4 @@
 
 #+STYLE: <script type="text/javascript" src="hyphenate.js"></script>
 
-#+OPTIONS: toc:t num:nil
+#+OPTIONS: toc:nil num:nil
