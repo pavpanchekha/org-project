@@ -303,7 +303,8 @@ the text below the headline as well as the headline itself.
 #+BEGIN_SRC javascript :tangle org-project.js
 $(function () {
     $(".tag span").click(function () {
-        var cls = $(this).attr("class");
+        var cls = $(this).text();
+        console.log(cls);
         $(".todo-item:not(:has(." + cls + "))").parent().toggle();
 #+END_SRC
 
@@ -312,13 +313,13 @@ that they are clickable and also add classes to selected tags (tags
 that we are filtering on.
 
 #+BEGIN_SRC javascript :tangle org-project.js
-        $("." + cls).parent().toggleClass("selected");
+        $("." + cls).toggleClass("selected");
     }).addClass("clickable");
 });
 #+END_SRC
 
 ** Styling
-
+   
 Our styling has to accomplish three tasks: it must set up pages to be
 switched; it must set up the pages buttons; and it must make the page
 look pretty.
@@ -487,7 +488,7 @@ so let's pick a good style for tags here.
     background: #D3D7CF;
     border: 2px solid #BABDB6;
     border-radius: 2px;
-    margin: 0 2px;
+    margin: 0 3px;
 }
 #+END_SRC
 

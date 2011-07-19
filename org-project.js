@@ -71,9 +71,10 @@ $(".outline-2:first").before(pages);
 
 $(function () {
     $(".tag span").click(function () {
-        var cls = $(this).attr("class");
+        var cls = $(this).text();
+        console.log(cls);
         $(".todo-item:not(:has(." + cls + "))").parent().toggle();
 
-$("." + cls).parent().toggleClass("selected");
+$("." + cls).toggleClass("selected");
     }).addClass("clickable");
 });
